@@ -1,0 +1,236 @@
+disabled_rules: # 执行时排除掉的规则
+  - colon
+  - comma
+  - control_statement
+  - force_cast
+  - identifier_name
+  - shorthand_operator
+  - function_body_length
+  - cyclomatic_complexity
+  - file_length
+  - large_tuple
+  - type_body_length
+  - empty_count
+  - trailing_whitespace
+opt_in_rules: # 一些规则仅仅是可选的
+  - empty_count
+  - missing_docs
+  # 可以通过执行如下指令来查找所有可用的规则:
+  # swiftlint rules
+# included: # 执行 linting 时包含的路径。如果出现这个 `--path` 会被忽略。
+#   - Source
+excluded: # 执行 linting 时忽略的路径。 优先级比 `included` 更高。
+  - Carthage
+  - Pods
+  - Source/ExcludedFolder
+  - Source/ExcludedFile.swift
+  - ccwpa/Classes/Common
+
+# 可配置的规则可以通过这个配置文件来自定义
+# 二进制规则可以设置他们的严格程度
+force_try:
+  severity: warning # 显式
+# 同时有警告和错误等级的规则，可以只设置它的警告等级
+# 隐式
+line_length: 400
+# 可以通过一个数组同时进行隐式设置
+type_body_length:
+  - 300 # warning
+  - 400 # error
+# 或者也可以同时进行显式设置
+file_length:
+  warning: 500
+  error: 1200
+# 命名规则可以设置最小长度和最大程度的警告/错误
+# 此外它们也可以设置排除在外的名字
+type_name:
+  min_length: 4 # 只是警告
+  max_length: # 警告和错误
+    warning: 40
+    error: 50
+  excluded: iPhone # 排除某个名字
+identifier_name:
+  min_length: # 只有最小长度
+    error: 4 # 只有错误
+  excluded: # 排除某些名字
+    - i
+    - id
+    - URL
+    - GlobalAPIKey
+reporter: "xcode" # 报告类型 (xcode, json, csv, checkstyle, junit, html, emoji)
+
+custom_rules:
+  uiwebview_disabled:
+    included: ".*.swift"
+    name: "UIWebView Usage Disabled"
+    regex: 'UIWebView'
+    message: "Do not use UIWebView. Use WKWebView Instead. https://developer.apple.com/reference/uikit/uiwebview"
+    severity: error
+
+  zero:
+    name: "Short .zero"
+    regex: '\(top: 0, left: 0, bottom: 0, right: 0\)'
+    message: "Please use short init `.zero`."
+    severity: error
+
+  let_variable:
+    name: "Let Variable"
+    regex: 'var\s\w*(:|(\s=))\sVariable'
+    message: "Please make variable using `let`."
+    severity: error
+
+  marks_style:
+    name: "Marks"
+    regex: '// MARK: -?[a-zA-Z0-9]'
+    message: "Marks should follow the following structure: // MARK: - Comment."
+    severity: warning
+
+  private_outlet:
+    name: "Outlet"
+    regex: '@IBOutlet(\sweak)?(\s(file)?private(\(set\))?)?\svar'
+    message: "Please use some of `private` modifiers and make property it weak. Use pattern: `IBOutlet private weak var`."
+    severity: error  
+
+  private_outlet:
+      name: "outlet"
+      regex: "(@IBOutlet var|@IBOutlet weak var|@IBOutlet private var|@IBOutlet weak private var|@IBOutlet weak private(set) var)"
+      message: "Please use `@IBOutlet private weak var` or `@IBOutlet private(set) weak var` instead of. "
+      severity: error   
+
+  delegate:
+    name: "Delegate"
+    regex: '(?<!weak\s)var\s\w*(D|d)elegate\w*:'
+    message: "Please use `weak` for `delegate`. "
+    severity: error
+
+  unnecessary_type:
+   name: "Unnecessary Type"
+   regex: '[ @a-zA-Z]*(?:let|var)\s\w*: ([a-zA-Z0-9]*)\?? = \1'
+   message: "Type definition not needed"
+   severity: error
+
+  unowned:
+    name: "Unowned"
+    regex: 'unowned'
+    message: "Please use `weak` instead. "
+    severity: error
+
+  empty_count_zero:
+    name: "Empty Count Violation"
+    regex: '\.count\s*(==|!=|<|<=|>|>=)\s*0'
+    message: "Prefer checking `isEmpty` over comparing `count` to zero."
+    severity: warning
+
+  # Should be { braces_body } instead of {braces_body}
+  spaces_around_braces:
+    included: ".*.swift"
+    name: "Spaces around the braces"
+    regex: '(([A-Za-z0-9])[\{\}])|([\{\}]([A-Za-z0-9]))'
+    message: "No spaces around the braces"
+    severity: error
+    match_kinds:
+    - attribute.builtin
+    - attribute.id
+    - buildconfig.id
+    - buildconfig.keyword
+    - identifier
+    - keyword
+    - objectliteral
+    - parameter
+    - placeholder
+    - typeidentifier
+
+  inout_keyword:
+    name: "Inout"
+    regex: 'inout'
+    message: "Don't use inout arguments"
+    severity: error
+    match_kinds: keyword
+
+  cyrillic_strings:
+    name: "Cyrillic strings"
+    regex: '[а-яА-Я]+'
+    message: "Localize or translate"
+    severity: error
+    match_kinds: 
+    - identifier
+    - string
+
+  simple_ban:
+    name: "Simple type name"
+    regex: '(class|struct)(.)+[sS]imple(.)+\{'
+    message: "Don't use 'simple' in type name, use 'default' or 'base' instead"
+    severity: warning
+  
+  multiple_empty_lines:
+    name: "Multiple Empty Lines"
+    regex: "((?: *\n){3,})"
+    message: "There are too many line breaks"
+    severity: warning  
+
+  bracket:
+    name: "Bracket"
+    regex: '// \}\n{2,}\}|\{\n{2,}\{'
+    message: "No empty line between two open or close brackets. "
+    severity: warning   
+
+  query_string:
+    name: "Query String"
+    regex: ' [=!><]+ \\\(.*\))'
+    message: "Donot use the string interpolation syntax for query string. "
+    severity: warning
+
+  type_first_empty_line:
+    name: "Class Declaration"
+    regex: 'class[^\n]+\{\n\s{4}\S'
+    message: "Please insert empty after type declaration. "
+    severity: warning
+
+  empty_string:
+    name: "Empty String"
+    regex: '(!\w+.isNotEmpty)|(length == 0)'
+    message: "Please use `isEmpty` instead. "
+    severity: error
+
+  vc_suffix:
+    name: "VC Suffix"
+    regex: 'VC '
+    message: "Please simplify with `vc`. "
+    severity: error
+
+  compile_lookup:
+    name: "Compile Lookup"
+    regex: '(var|let) \w+ = \['
+    message: "You need to give types to the array and dictionary. "
+    severity: error
+
+  switch_enum:
+    name: "Switch Enum"
+    regex: '(case \w+\.+rawValue:)'
+    message: "Don't use enum.rawValue in switch-case. Please convert value to enum first. "
+    severity: error
+
+  comments_space:
+    name: "Space After Comment"
+    regex: '(^ *//\w+)'
+    message: "There should be a space after //"
+    severity: warning
+    match_kinds: comment
+
+  multiple_empty_lines:
+    name: "Multiple Empty Lines"
+    regex: '((?: *\n){3,})'
+    message: "There are too many line breaks"
+    severity: warning
+
+  empty_line:
+    name: "Empty Line"
+    regex: '(\}\n +( |class|static|dynamic|@objc|@IBAction|override|private|public|internal){0,}func)'
+    message: "Must have an empty line between functions. "
+    severity: warning
+
+  empty_count_zero:
+    name: "Empty Count Violation"
+    regex: '(\.count\s*(==|!=|<|<=|>|>=)\s*0)'
+    message: "Prefer checking `isEmpty` over comparing `count` to zero. "
+    severity: warning
